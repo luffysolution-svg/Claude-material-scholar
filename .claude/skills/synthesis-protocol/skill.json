@@ -1,0 +1,99 @@
+{
+  "name": "synthesis-protocol",
+  "version": "1.0.0",
+  "description": "Document and track catalyst synthesis protocols with batch records, safety data, and Obsidian/Zotero integration",
+  "author": "Materials Research Assistant",
+  "entrypoint": "synthesize.py",
+  "parameters": {
+    "action": {
+      "type": "string",
+      "description": "Action: new_protocol, log_batch, query_safety, generate_report",
+      "required": true,
+      "enum": ["new_protocol", "log_batch", "query_safety", "generate_report"]
+    },
+    "synthesis_method": {
+      "type": "string",
+      "description": "Synthesis method type",
+      "required": false,
+      "enum": ["impregnation", "coprecipitation", "sol_gel", "hydrothermal", "deposition_precipitation", "cvd", "solvothermal", "combustion", "custom"]
+    },
+    "material_id": {
+      "type": "string",
+      "description": "Material identifier (e.g., Ni-Al2O3-10wt)",
+      "required": false
+    },
+    "batch_id": {
+      "type": "string",
+      "description": "Batch identifier for tracking",
+      "required": false
+    },
+    "reagents": {
+      "type": "array",
+      "description": "List of reagents with name, amount, unit, CAS number",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "amount": {"type": "number"},
+          "unit": {"type": "string"},
+          "cas_number": {"type": "string"},
+          "purity": {"type": "string"},
+          "supplier": {"type": "string"}
+        }
+      }
+    },
+    "conditions": {
+      "type": "object",
+      "description": "Synthesis conditions (temperature, time, pH, atmosphere, etc.)",
+      "required": false
+    },
+    "yield_data": {
+      "type": "object",
+      "description": "Yield information (mass_g, theoretical_g, yield_percent)",
+      "required": false
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or observations",
+      "required": false
+    },
+    "project_path": {
+      "type": "string",
+      "description": "Path to Research project directory",
+      "required": false
+    },
+    "zotero_reference": {
+      "type": "string",
+      "description": "Zotero citation key for synthesis reference",
+      "required": false
+    }
+  },
+  "examples": [
+    {
+      "description": "Create new impregnation protocol",
+      "parameters": {
+        "action": "new_protocol",
+        "synthesis_method": "impregnation",
+        "material_id": "Ni-Al2O3-10wt",
+        "reagents": [
+          {"name": "Ni(NO3)2·6H2O", "amount": 2.91, "unit": "g", "cas_number": "13478-00-7"},
+          {"name": "Al2O3 support", "amount": 5.0, "unit": "g"}
+        ],
+        "conditions": {"temperature_C": 80, "time_h": 12, "calcination_C": 500},
+        "project_path": "Research/CO2-catalyst"
+      }
+    },
+    {
+      "description": "Log synthesis batch",
+      "parameters": {
+        "action": "log_batch",
+        "material_id": "Ni-Al2O3-10wt",
+        "batch_id": "NiAl-2026-001",
+        "yield_data": {"mass_g": 4.8, "theoretical_g": 5.0, "yield_percent": 96},
+        "notes": "Clear solution obtained, good impregnation"
+      }
+    }
+  ],
+  "tags": ["synthesis", "protocol", "batch-tracking", "safety", "catalysis"]
+}

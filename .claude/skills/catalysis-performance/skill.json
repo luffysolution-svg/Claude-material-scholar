@@ -1,0 +1,66 @@
+{
+  "name": "catalysis-performance",
+  "version": "1.0.0",
+  "description": "Evaluate catalysis performance including activity, selectivity, stability, and Arrhenius analysis with statistical comparison",
+  "author": "Materials Research Assistant",
+  "tags": ["catalysis", "performance", "TOF", "selectivity", "stability", "kinetics"],
+  "parameters": [
+    {
+      "name": "data_file",
+      "type": "string",
+      "description": "Path to experimental data file or 'manual' for manual input",
+      "required": true
+    },
+    {
+      "name": "material_id",
+      "type": "string",
+      "description": "Material/catalyst identifier",
+      "required": true
+    },
+    {
+      "name": "project_path",
+      "type": "string",
+      "description": "Path to Research project directory",
+      "required": true
+    },
+    {
+      "name": "analysis_type",
+      "type": "string",
+      "description": "Type of analysis: activity, selectivity, stability, arrhenius, or full",
+      "required": true,
+      "options": ["activity", "selectivity", "stability", "arrhenius", "full"]
+    },
+    {
+      "name": "reaction_conditions",
+      "type": "object",
+      "description": "Reaction conditions (temperature, pressure, flow rate, etc.)",
+      "required": false,
+      "default": {}
+    },
+    {
+      "name": "catalyst_properties",
+      "type": "object",
+      "description": "Catalyst properties (mass, active sites, surface area, etc.)",
+      "required": false,
+      "default": {}
+    },
+    {
+      "name": "literature_data",
+      "type": "array",
+      "description": "Literature data for comparison",
+      "required": false,
+      "default": []
+    }
+  ],
+  "instructions": "This skill evaluates catalytic performance with comprehensive analysis and reporting.\n\n## Analysis Types\n\n### Activity Analysis\n- **Conversion**: Reactant conversion percentage\n- **Yield**: Product yield percentage\n- **TOF**: Turnover frequency (h⁻¹)\n- **TON**: Turnover number\n- **Space Velocity**: GHSV, WHSV\n- **Reaction Rate**: mol/g/s\n- **Productivity**: g_product/g_cat/h\n- **Statistical Analysis**: Mean, std, confidence intervals\n\n### Selectivity Analysis\n- **Product Distribution**: Molar and mass basis\n- **Target Selectivity**: Selectivity toward desired product\n- **Regioselectivity**: Positional isomer ratios\n- **Stereoselectivity**: Enantiomeric excess (ee), diastereomeric ratio (dr)\n- **Carbon Balance**: Carbon atom accounting\n- **Selectivity Trends**: vs conversion, temperature, time\n\n### Stability Analysis\n- **Time-on-Stream**: Activity vs time\n- **Deactivation Kinetics**: Exponential, power law, linear models\n- **Activity Retention**: Percentage after testing\n- **Deactivation Rate**: % per hour\n- **Regeneration Cycles**: Recovery after regeneration\n- **Half-Life**: Time to 50% activity\n\n### Arrhenius Analysis\n- **Activation Energy**: Ea (kJ/mol)\n- **Pre-exponential Factor**: A\n- **Temperature Dependence**: Rate vs temperature\n- **Q10 Coefficient**: Temperature sensitivity\n- **Arrhenius Plot**: ln(k) vs 1/T\n\n### Literature Comparison\n- **Benchmark Table**: Compare with literature values\n- **Percentile Ranking**: Performance ranking\n- **Statistical Comparison**: t-test, significance\n- **Performance Category**: Best-in-class, above/below average\n- **Improvement Calculation**: % improvement over literature\n\n## Data File Formats\n\n### Activity Data\n- CSV/Excel format with columns:\n  - Time (h), Conversion (%), Yield (%), Products (mol/h)\n  - Or: Reactant_in, Reactant_out, Product_1, Product_2, ...\n\n### Selectivity Data\n- CSV/Excel format with columns:\n  - Product_name, Amount (mol or g), Molecular_weight\n\n### Stability Data\n- CSV/Excel format with columns:\n  - Time (h), Conversion (%) or Activity metric\n\n### Arrhenius Data\n- CSV/Excel format with columns:\n  - Temperature (°C or K), Rate_constant or Conversion (%)\n\n## Reaction Conditions\n\n```json\n{\n  \"temperature_C\": 250,\n  \"pressure_bar\": 30,\n  \"flow_rate_mL_min\": 50,\n  \"feed_composition\": \"CO2:H2 = 1:3\",\n  \"GHSV_h-1\": 10000,\n  \"reaction\": \"CO2 + 3H2 → CH3OH + H2O\"\n}\n```\n\n## Catalyst Properties\n\n```json\n{\n  \"mass_g\": 0.5,\n  \"active_sites_mol\": 1.5e-4,\n  \"surface_area_m2_g\": 145.3,\n  \"metal_loading_%\": 10,\n  \"support\": \"Al2O3\"\n}\n```\n\n## Literature Data Format\n\n```json\n[\n  {\n    \"reference\": \"@Smith2023\",\n    \"data\": {\n      \"conversion\": 85.5,\n      \"selectivity\": 92.3,\n      \"TOF\": 125.0,\n      \"conditions\": \"250°C, 30 bar\"\n    }\n  }\n]\n```\n\n## Workflow\n\n1. **Load Data**: Read experimental data file\n2. **Parse Conditions**: Extract reaction conditions and catalyst properties\n3. **Calculate Metrics**: Compute activity, selectivity, stability metrics\n4. **Statistical Analysis**: Calculate mean, std, confidence intervals\n5. **Literature Comparison**: Compare with literature benchmarks\n6. **Generate Plots**: Create performance plots (conversion vs time, selectivity charts, Arrhenius plots)\n7. **Interpret Results**: Automated interpretation and recommendations\n8. **Generate Report**: Create Obsidian markdown report with:\n   - YAML frontmatter\n   - Results tables\n   - Embedded plots\n   - Literature comparison\n   - Backlinks to materials and characterization\n9. **Save**: Save to Research/{project}/Reactions/Results/\n\n## Output\n\n- Markdown report in Research/{project}/Reactions/Results/\n- Performance plots (PNG)\n- JSON file with raw results\n- Benchmark comparison table\n- Backlinks to materials, characterization, and synthesis",
+  "examples": [
+    {
+      "input": "analysis_type: 'full', data_file: 'catalysis_data.csv', material_id: 'Ni-Al2O3-10wt', project_path: 'Research/CO2-catalyst'",
+      "output": "Full catalysis analysis complete. Conversion: 78.5%, Selectivity: 91.2%, TOF: 145 h⁻¹. Report saved."
+    },
+    {
+      "input": "analysis_type: 'stability', data_file: 'time_on_stream.csv', material_id: 'Ni-Al2O3-10wt'",
+      "output": "Stability analysis complete. Activity retention: 85.3% after 100h. Deactivation rate: 0.15%/h."
+    }
+  ]
+}

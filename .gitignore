@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data files (keep templates, exclude actual research data)
+Research/*/Characterization/**/*.csv
+Research/*/Characterization/**/*.xlsx
+Research/*/Reactions/**/*.csv
+Research/*/Reactions/**/*.xlsx
+Research/*/Computational/**/*.log
+Research/*/Computational/**/*.out
+Research/*/Computational/**/*.chk
+
+# Batch registry (contains local paths)
+Research/*/Synthesis/batch_registry.json
+
+# Plots generated at runtime
+*.png
+*.pdf
+!Research/templates/**
+
+# Logs
+*.log

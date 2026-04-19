@@ -1,0 +1,42 @@
+{
+  "name": "materials-init",
+  "version": "1.0.0",
+  "description": "Initialize a new materials research project with Zotero collections and Obsidian structure",
+  "author": "Materials Research Assistant",
+  "tags": ["materials", "initialization", "project-setup"],
+  "parameters": [
+    {
+      "name": "project_name",
+      "type": "string",
+      "description": "Name of the research project (e.g., 'CO2-hydrogenation-catalyst')",
+      "required": true
+    },
+    {
+      "name": "research_focus",
+      "type": "string",
+      "description": "Brief description of research focus",
+      "required": true
+    },
+    {
+      "name": "pi_name",
+      "type": "string",
+      "description": "Principal investigator name",
+      "required": false,
+      "default": ""
+    },
+    {
+      "name": "create_zotero_collections",
+      "type": "boolean",
+      "description": "Create Zotero collections for this project",
+      "required": false,
+      "default": true
+    }
+  ],
+  "instructions": "This skill initializes a new materials research project with the following steps:\n\n1. Create Obsidian-compatible directory structure in Research/{project_name}/\n2. Generate 00-Hub.md from template with project metadata\n3. Create subdirectories: Materials/, Characterization/, Reactions/, Synthesis/, Computational/, Papers/, Writing/, Daily/\n4. If create_zotero_collections is true, create Zotero collections: Core Papers, Catalysts, Characterization, Mechanisms, Synthesis, Computational\n5. Initialize .claude/project-memory/registry.yaml for project binding\n6. Create README.md in project directory with setup instructions\n7. Generate initial literature search suggestions based on research focus\n\nThe skill should:\n- Use the template files in Research/templates/\n- Replace template variables with actual values\n- Create .gitkeep files in empty directories\n- Generate a project initialization report\n- Provide next steps for the user",
+  "examples": [
+    {
+      "input": "project_name: 'CO2-hydrogenation-catalyst', research_focus: 'Develop efficient catalysts for CO2 hydrogenation to methanol'",
+      "output": "Created project structure at Research/CO2-hydrogenation-catalyst/ with Zotero collections and Obsidian templates"
+    }
+  ]
+}

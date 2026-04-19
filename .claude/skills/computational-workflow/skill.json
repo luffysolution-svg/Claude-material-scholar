@@ -1,0 +1,171 @@
+{
+  "name": "computational-workflow",
+  "version": "1.0.0",
+  "description": "Comprehensive computational chemistry workflow for DFT analysis, mechanism studies, and energy diagrams",
+  "author": "Materials Research Assistant",
+  "entrypoint": "analyze.py",
+  "parameters": {
+    "action": {
+      "type": "string",
+      "description": "Action to perform: parse, thermodynamics, mechanism, energy_diagram, full_analysis",
+      "required": true,
+      "enum": ["parse", "thermodynamics", "mechanism", "energy_diagram", "full_analysis"]
+    },
+    "software": {
+      "type": "string",
+      "description": "DFT software used: gaussian, orca, vasp",
+      "required": false,
+      "enum": ["gaussian", "orca", "vasp"]
+    },
+    "output_files": {
+      "type": "array",
+      "description": "List of DFT output file paths to analyze",
+      "required": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "reaction_type": {
+      "type": "string",
+      "description": "Type of reaction analysis: reaction_energy, activation_barrier, multi_step",
+      "required": false,
+      "enum": ["reaction_energy", "activation_barrier", "multi_step"]
+    },
+    "reactant_files": {
+      "type": "array",
+      "description": "Output files for reactants",
+      "required": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "product_files": {
+      "type": "array",
+      "description": "Output files for products",
+      "required": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "transition_state_files": {
+      "type": "array",
+      "description": "Output files for transition states",
+      "required": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "intermediate_files": {
+      "type": "array",
+      "description": "Output files for intermediates",
+      "required": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "temperature": {
+      "type": "number",
+      "description": "Temperature for thermodynamic corrections (K)",
+      "required": false,
+      "default": 298.15
+    },
+    "energy_unit": {
+      "type": "string",
+      "description": "Energy unit: hartree (Gaussian/ORCA) or eV (VASP)",
+      "required": false,
+      "default": "hartree",
+      "enum": ["hartree", "eV"]
+    },
+    "diagram_title": {
+      "type": "string",
+      "description": "Title for energy diagram",
+      "required": false,
+      "default": "Reaction Coordinate Diagram"
+    },
+    "output_dir": {
+      "type": "string",
+      "description": "Directory to save analysis results and figures",
+      "required": false
+    },
+    "project_name": {
+      "type": "string",
+      "description": "Project name for Obsidian integration",
+      "required": false
+    }
+  },
+  "dependencies": {
+    "python": ">=3.8",
+    "packages": [
+      "numpy",
+      "scipy",
+      "matplotlib",
+      "pandas"
+    ]
+  },
+  "outputs": {
+    "parsed_data": {
+      "type": "object",
+      "description": "Parsed DFT output data (energies, geometries, frequencies)"
+    },
+    "thermodynamics": {
+      "type": "object",
+      "description": "Thermodynamic properties (ΔG, ΔH, ΔS, K, k)"
+    },
+    "energy_diagram": {
+      "type": "string",
+      "description": "Path to generated energy diagram figure"
+    },
+    "report": {
+      "type": "string",
+      "description": "Path to Obsidian-compatible markdown report"
+    }
+  },
+  "examples": [
+    {
+      "description": "Parse single Gaussian output file",
+      "parameters": {
+        "action": "parse",
+        "software": "gaussian",
+        "output_files": ["reactant.log"]
+      }
+    },
+    {
+      "description": "Calculate reaction thermodynamics",
+      "parameters": {
+        "action": "thermodynamics",
+        "software": "gaussian",
+        "reaction_type": "reaction_energy",
+        "reactant_files": ["reactant.log"],
+        "product_files": ["product.log"],
+        "temperature": 298.15
+      }
+    },
+    {
+      "description": "Analyze activation barrier",
+      "parameters": {
+        "action": "thermodynamics",
+        "software": "orca",
+        "reaction_type": "activation_barrier",
+        "reactant_files": ["reactant.out"],
+        "transition_state_files": ["ts.out"],
+        "temperature": 373.15
+      }
+    },
+    {
+      "description": "Full mechanism analysis with energy diagram",
+      "parameters": {
+        "action": "full_analysis",
+        "software": "gaussian",
+        "reaction_type": "multi_step",
+        "reactant_files": ["reactant.log"],
+        "intermediate_files": ["int1.log", "int2.log"],
+        "transition_state_files": ["ts1.log", "ts2.log"],
+        "product_files": ["product.log"],
+        "temperature": 298.15,
+        "diagram_title": "CO2 Hydrogenation Mechanism",
+        "project_name": "CO2-hydrogenation"
+      }
+    }
+  ],
+  "tags": ["computational-chemistry", "DFT", "mechanism", "thermodynamics", "energy-diagram"]
+}

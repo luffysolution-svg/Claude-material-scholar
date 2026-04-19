@@ -1,0 +1,46 @@
+{
+  "commands": [
+    {
+      "name": "materials-init",
+      "description": "Initialize a new materials research project with Zotero and Obsidian integration",
+      "skill": "materials-init",
+      "prompt": "Initialize a new materials research project. Ask the user for:\n1. Project name (e.g., 'CO2-hydrogenation-catalyst')\n2. Research focus description\n3. Principal investigator name (optional)\n4. Whether to create Zotero collections (default: yes)\n\nThen execute the materials-init skill with these parameters."
+    },
+    {
+      "name": "characterization",
+      "description": "Analyze characterization data (XRD, BET, TEM, XPS, electrochemistry)",
+      "skill": "characterization-analysis",
+      "prompt": "Analyze characterization data. Ask the user for:\n1. Data type (XRD/BET/TEM/XPS/Electrochemistry)\n2. File path or data input\n3. Material ID\n4. Save location in project\n\nThen execute the characterization-analysis skill."
+    },
+    {
+      "name": "catalysis-results",
+      "description": "Evaluate catalysis performance (conversion, selectivity, TOF, stability)",
+      "skill": "catalysis-performance",
+      "prompt": "Evaluate catalysis performance. Ask the user for:\n1. Experimental data file or manual input\n2. Material ID\n3. Reaction conditions\n4. Analysis type (activity/selectivity/stability/full)\n\nThen execute the catalysis-performance skill."
+    },
+    {
+      "name": "dft-analysis",
+      "description": "Parse and analyze DFT computational results",
+      "skill": "computational-workflow",
+      "prompt": "Analyze DFT computational results. Ask the user for:\n1. Output file path (Gaussian .log, ORCA .out, VASP OUTCAR)\n2. Analysis type (energy/geometry/frequency/mechanism)\n3. Material or reaction system\n\nThen execute the computational-workflow skill."
+    },
+    {
+      "name": "synthesis-log",
+      "description": "Document synthesis procedures and batch records",
+      "skill": "synthesis-protocol",
+      "prompt": "Document synthesis procedure. Ask the user for:\n1. Material name/ID\n2. Synthesis method\n3. Reagents and conditions\n4. Batch number\n\nThen execute the synthesis-protocol skill."
+    },
+    {
+      "name": "manuscript-draft",
+      "description": "Generate manuscript draft from Obsidian research notes and experimental data",
+      "skill": "materials-paper-review",
+      "prompt": "Generate a manuscript draft by compiling data from the Research project directory.\n\nAsk the user for:\n1. Project name (e.g., 'CO2-hydrogenation-catalyst')\n2. Target journal (ACS Catalysis, Journal of Catalysis, Nature Materials, etc.)\n3. Manuscript title\n4. Key message / main finding\n\nThen:\n- Scan Research/{project}/Characterization/ for characterization data\n- Scan Research/{project}/Reactions/Results/ for performance data\n- Scan Research/{project}/Computational/ for DFT results\n- Scan Research/{project}/Papers/ for literature citations\n- Generate IMRAD-structured manuscript with:\n  * Abstract (quantitative results)\n  * Introduction (context, gap, objective)\n  * Experimental (synthesis, characterization methods, catalytic tests)\n  * Results and Discussion (characterization, performance, mechanism)\n  * Conclusions\n  * References (from Zotero/Papers notes)\n- Save to Research/{project}/Writing/manuscript_draft.md"
+    },
+    {
+      "name": "paper-review",
+      "description": "Review manuscript for completeness and quality",
+      "skill": "materials-paper-review",
+      "prompt": "Review manuscript. Ask the user for:\n1. Manuscript file path\n2. Target journal\n3. Review focus (structure/data/citations/figures)\n\nThen execute the materials-paper-review skill."
+    }
+  ]
+}

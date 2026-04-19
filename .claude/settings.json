@@ -1,0 +1,77 @@
+{
+  "name": "Materials Research Assistant",
+  "version": "1.0.0",
+  "description": "Comprehensive research workflow system for materials science, chemistry, and catalysis",
+  "skills_directory": "skills",
+  "agents_directory": "agents",
+  "commands_file": "commands/commands.json",
+  "hooks": {
+    "session_start": "hooks/session-start.js"
+  },
+  "mcp_servers": {
+    "ai4scholar": {
+      "enabled": true,
+      "description": "Literature search and citation management"
+    },
+    "chembl": {
+      "enabled": true,
+      "description": "Chemical compound database"
+    },
+    "consensus": {
+      "enabled": true,
+      "description": "Research consensus search"
+    },
+    "mineru": {
+      "enabled": true,
+      "description": "High-quality PDF parsing"
+    }
+  },
+  "integrations": {
+    "zotero": {
+      "enabled": true,
+      "api_key_env": "ZOTERO_API_KEY",
+      "default_collections": [
+        "Core Papers",
+        "Catalysts",
+        "Characterization",
+        "Mechanisms",
+        "Synthesis",
+        "Computational"
+      ]
+    },
+    "obsidian": {
+      "enabled": true,
+      "vault_path": "Research",
+      "daily_notes_path": "Daily",
+      "templates_path": "templates"
+    }
+  },
+  "permissions": {
+    "allow_file_read": true,
+    "allow_file_write": true,
+    "allow_bash": true,
+    "allow_mcp_tools": true
+  },
+  "project_structure": {
+    "research_directory": "Research",
+    "templates_directory": "Research/templates",
+    "project_subdirectories": [
+      "Materials",
+      "Characterization/XRD",
+      "Characterization/BET",
+      "Characterization/TEM",
+      "Characterization/XPS",
+      "Characterization/Electrochemistry",
+      "Reactions/Results",
+      "Reactions/Conditions",
+      "Synthesis/Protocols",
+      "Synthesis/Batches",
+      "Computational/DFT",
+      "Computational/MD",
+      "Papers",
+      "Writing/Manuscripts",
+      "Writing/Presentations",
+      "Daily"
+    ]
+  }
+}

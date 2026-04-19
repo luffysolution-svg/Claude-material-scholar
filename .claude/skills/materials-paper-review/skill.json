@@ -1,0 +1,61 @@
+{
+  "name": "materials-paper-review",
+  "version": "1.0.0",
+  "description": "Self-review checklist for materials science manuscripts. Verifies characterization completeness, data presentation, and journal requirements.",
+  "author": "Materials Research Assistant",
+  "entrypoint": "review.py",
+  "parameters": {
+    "manuscript_path": {
+      "type": "string",
+      "description": "Path to manuscript file (.md, .docx, or .tex)",
+      "required": true
+    },
+    "journal": {
+      "type": "string",
+      "description": "Target journal for formatting requirements",
+      "required": false,
+      "enum": [
+        "Nature Materials",
+        "Advanced Materials",
+        "ACS Catalysis",
+        "Journal of Catalysis",
+        "JACS",
+        "Angewandte Chemie",
+        "ACS Nano",
+        "Chemistry of Materials",
+        "Applied Catalysis B",
+        "ChemCatChem",
+        "general"
+      ],
+      "default": "general"
+    },
+    "research_type": {
+      "type": "string",
+      "description": "Type of research: heterogeneous_catalysis, electrocatalysis, computational, synthesis",
+      "required": false,
+      "default": "heterogeneous_catalysis"
+    },
+    "project_path": {
+      "type": "string",
+      "description": "Path to Research project directory for data verification",
+      "required": false
+    },
+    "output_path": {
+      "type": "string",
+      "description": "Path to save review report",
+      "required": false
+    }
+  },
+  "examples": [
+    {
+      "description": "Review catalysis manuscript for ACS Catalysis",
+      "parameters": {
+        "manuscript_path": "Research/CO2-catalyst/Writing/manuscript_v1.md",
+        "journal": "ACS Catalysis",
+        "research_type": "heterogeneous_catalysis",
+        "project_path": "Research/CO2-catalyst"
+      }
+    }
+  ],
+  "tags": ["scientific-writing", "peer-review", "manuscript", "materials-science"]
+}

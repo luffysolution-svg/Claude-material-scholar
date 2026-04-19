@@ -1,0 +1,52 @@
+{
+  "name": "characterization-analysis",
+  "version": "1.0.0",
+  "description": "Analyze characterization data (XRD, BET, TEM, XPS, electrochemistry) with automated plotting and interpretation",
+  "author": "Materials Research Assistant",
+  "tags": ["characterization", "XRD", "BET", "XPS", "electrochemistry", "analysis"],
+  "parameters": [
+    {
+      "name": "technique",
+      "type": "string",
+      "description": "Characterization technique: XRD, BET, TEM, XPS, or Electrochemistry",
+      "required": true,
+      "options": ["XRD", "BET", "TEM", "XPS", "Electrochemistry"]
+    },
+    {
+      "name": "data_file",
+      "type": "string",
+      "description": "Path to data file or 'manual' for manual input",
+      "required": true
+    },
+    {
+      "name": "material_id",
+      "type": "string",
+      "description": "Material identifier (e.g., 'Ni-Al2O3-10wt-batch1')",
+      "required": true
+    },
+    {
+      "name": "project_path",
+      "type": "string",
+      "description": "Path to Research project directory",
+      "required": true
+    },
+    {
+      "name": "analysis_options",
+      "type": "object",
+      "description": "Technique-specific analysis options",
+      "required": false,
+      "default": {}
+    }
+  ],
+  "instructions": "This skill analyzes characterization data and generates comprehensive reports.\n\n## Supported Techniques\n\n### XRD (X-ray Diffraction)\n- Peak identification and indexing\n- Phase matching against database\n- Crystallite size calculation (Scherrer equation)\n- Lattice parameter determination\n- d-spacing calculation\n\n### BET (Surface Area)\n- BET surface area calculation\n- Isotherm classification (Type I-VI)\n- Pore volume determination\n- Pore size distribution (BJH method)\n- Average pore diameter\n\n### XPS (X-ray Photoelectron Spectroscopy)\n- Peak fitting (Gaussian, Lorentzian, Voigt)\n- Shirley background subtraction\n- Elemental composition\n- Oxidation state determination\n- Binding energy calibration\n\n### Electrochemistry\n- Cyclic voltammetry (CV) analysis\n- Tafel plot analysis (kinetic parameters)\n- EIS (Electrochemical Impedance Spectroscopy) fitting\n- Stability curve analysis\n- ECSA calculation\n\n### TEM/SEM\n- Image analysis (if image provided)\n- Particle size distribution\n- Morphology description\n\n## Workflow\n\n1. **Load Data**: Read data file (supports .xy, .csv, .txt, .xlsx)\n2. **Analyze**: Apply technique-specific analysis\n3. **Generate Plots**: Create publication-quality figures\n4. **Interpret**: Provide automated interpretation\n5. **Generate Report**: Create Obsidian markdown report with:\n   - YAML frontmatter metadata\n   - Analysis results tables\n   - Embedded plots\n   - Interpretation\n   - Backlinks to materials and synthesis\n6. **Save**: Save report to Research/{project}/Characterization/{technique}/\n\n## Data File Formats\n\n### XRD\n- Two-column format: 2θ (degrees), Intensity\n- Supported: .xy, .csv, .txt\n\n### BET\n- Two-column format: P/P0, Quantity Adsorbed (cm³/g STP)\n- Supported: .csv, .txt, .xlsx\n\n### XPS\n- Two-column format: Binding Energy (eV), Intensity (counts)\n- Supported: .xy, .csv, .txt\n\n### Electrochemistry\n- CV: Potential (V), Current (mA)\n- Tafel: Overpotential (V), Current Density (mA/cm²)\n- EIS: Frequency (Hz), Z_real (Ohm), Z_imag (Ohm)\n- Supported: .csv, .txt, .xlsx\n\n## Analysis Options\n\n### XRD Options\n```json\n{\n  \"wavelength\": 1.5406,\n  \"prominence\": 0.1,\n  \"phase_database\": {...}\n}\n```\n\n### BET Options\n```json\n{\n  \"p_p0_range\": [0.05, 0.3],\n  \"cross_section\": 0.162\n}\n```\n\n### XPS Options\n```json\n{\n  \"peak_type\": \"voigt\",\n  \"background\": \"shirley\",\n  \"calibration_peak\": 284.8\n}\n```\n\n### Electrochemistry Options\n```json\n{\n  \"scan_rate\": 50,\n  \"electrode_area\": 1.0,\n  \"reference_electrode\": \"Ag/AgCl\"\n}\n```\n\n## Output\n\n- Markdown report in Research/{project}/Characterization/{technique}/\n- Plots saved as PNG in same directory\n- JSON file with raw analysis results\n- Backlinks to related materials and synthesis notes",
+  "examples": [
+    {
+      "input": "technique: 'XRD', data_file: 'xrd_data.xy', material_id: 'Ni-Al2O3-10wt', project_path: 'Research/CO2-catalyst'",
+      "output": "XRD analysis complete. Report saved to Research/CO2-catalyst/Characterization/XRD/Ni-Al2O3-10wt_XRD_2026-04-19.md"
+    },
+    {
+      "input": "technique: 'BET', data_file: 'bet_isotherm.csv', material_id: 'Ni-Al2O3-10wt', project_path: 'Research/CO2-catalyst'",
+      "output": "BET analysis complete. Surface area: 145.3 m²/g. Report saved to Research/CO2-catalyst/Characterization/BET/"
+    }
+  ]
+}
