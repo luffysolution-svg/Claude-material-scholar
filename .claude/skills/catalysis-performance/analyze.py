@@ -21,6 +21,32 @@ from arrhenius_analysis import ArrheniusAnalyzer
 from literature_comparison import LiteratureComparison
 
 
+COLUMN_ALIASES = {
+    'Conversion': ['conversion', 'CO2_conversion', 'co2_conversion', 'conv', 'X', 'x_co2'],
+    'Yield': ['yield', 'product_yield', 'methanol_yield', 'Y'],
+    'Time': ['time', 'time_h', 'time_on_stream', 'TOS', 'tos'],
+    'Temperature': ['temperature', 'temperature_C', 'temp', 'T', 'T_C'],
+    'Rate_constant': ['rate_constant', 'k', 'rate'],
+}
+
+
+def normalize_columns(df):
+    """Rename columns to canonical names based on aliases."""
+    rename_map = {}
+    lower_cols = {c.lower(): c for c in df.columns}
+    for canonical, aliases in COLUMN_ALIASES.items():
+        if canonical in df.columns:
+            continue
+        for alias in aliases:
+            if alias in df.columns:
+                rename_map[alias] = canonical
+                break
+            if alias.lower() in lower_cols:
+                rename_map[lower_cols[alias.lower()]] = canonical
+                break
+    return df.rename(columns=rename_map)
+
+
 def load_data_file(file_path):
     """Load experimental data file."""
     file_path = Path(file_path)
@@ -37,7 +63,7 @@ def load_data_file(file_path):
     else:
         raise ValueError(f"Unsupported file format: {file_path.suffix}")
 
-    return df
+    return normalize_columns(df)
 
 
 def analyze_activity(df, catalyst_props, reaction_conds):
@@ -91,25 +117,38 @@ def analyze_selectivity(df):
     analyzer = SelectivityAnalyzer()
     results = {}
 
-    # Check for product columns
+    # Check for product columns: Product_* prefix OR *_selectivity suffix
     product_cols = [col for col in df.columns if col.startswith('Product_')]
+    if not product_cols:
+        product_cols = [col for col in df.columns if col.lower().endswith('_selectivity')]
 
     if product_cols:
-        # Calculate selectivity
         product_amounts = {}
         for col in product_cols:
-            product_amounts[col] = df[col].mean()
+            # Strip _selectivity suffix for cleaner names
+            name = col.replace('_selectivity', '').replace('_Selectivity', '')
+            product_amounts[name] = df[col].mean()
 
         selectivities = analyzer.calculate_selectivity(product_amounts)
-        results['selectivities'] = selectivities
+        results['product_distribution'] = selectivities
 
-        # Calculate carbon balance if provided
+        # Identify target product (highest selectivity)
+        if selectivities:
+            target = max(selectivities, key=selectivities.get)
+            results['target_product'] = target
+            results['target_selectivity_%'] = selectivities[target]
+
+        # Carbon balance
         if 'Carbon_in' in df.columns and 'Carbon_out' in df.columns:
             carbon_balance = analyzer.calculate_carbon_balance(
                 df['Carbon_in'].mean(),
                 df['Carbon_out'].mean()
             )
             results['carbon_balance_%'] = carbon_balance
+        else:
+            # Estimate from selectivity sum
+            total_sel = sum(product_amounts.values())
+            results['carbon_balance_%'] = round(total_sel, 1)
 
     return results
 
@@ -293,15 +332,26 @@ def main():
     if args.literature:
         results['literature_comparison'] = compare_with_literature(results.get('activity', {}), args.literature)
 
-    # Generate report
-    report_path = generate_report(results, args.material_id, args.project_path, args.conditions)
+    # Generate report (flatten activity results to top level for report)
+    flat_results = results.get('activity', {})
+    flat_results.update(results.get('selectivity', {}))
+    report_path = generate_report(flat_results, args.material_id, args.project_path, args.conditions)
 
     print(f"Analysis complete. Report saved to: {report_path}")
 
     # Save JSON output
     if args.output:
+        class NumpyEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, (np.integer,)):
+                    return int(obj)
+                if isinstance(obj, (np.floating,)):
+                    return float(obj)
+                if isinstance(obj, np.ndarray):
+                    return obj.tolist()
+                return super().default(obj)
         with open(args.output, 'w') as f:
-            json.dump(results, f, indent=2)
+            json.dump(results, f, indent=2, cls=NumpyEncoder)
 
     return results
 

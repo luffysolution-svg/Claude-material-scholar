@@ -28,11 +28,12 @@ def main():
     report = reviewer.review_manuscript(content, str(manuscript_path))
     formatted = reviewer.format_report(report)
 
-    print(formatted)
+    sys.stdout.buffer.write(formatted.encode('utf-8', errors='replace'))
+    sys.stdout.buffer.write(b'\n')
 
     if args.output:
         Path(args.output).write_text(formatted, encoding='utf-8')
-        print(f"\nReport saved: {args.output}")
+        sys.stdout.buffer.write(f"\nReport saved: {args.output}\n".encode('utf-8'))
 
 
 if __name__ == '__main__':

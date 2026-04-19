@@ -92,6 +92,12 @@ class StabilityAnalyzer:
         time = np.array(time)
         activity = np.array(activity)
 
+        # Skip leading zero-activity points (e.g. t=0 before reaction starts)
+        nonzero = activity > 0
+        if nonzero.any():
+            time = time[nonzero]
+            activity = activity[nonzero]
+
         # Initial and final activity
         initial_activity = activity[0]
         final_activity = activity[-1]

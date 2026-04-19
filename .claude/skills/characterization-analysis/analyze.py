@@ -145,7 +145,7 @@ def analyze_bet(data, options, material_id, project_path):
     analyzer = BETAnalyzer(data['p_p0'], data['q_ads'])
 
     # Calculate BET surface area
-    bet_results = analyzer.calculate_bet_surface_area(p_p0_range, cross_section)
+    bet_results = analyzer.calculate_bet_surface_area(p_p0_range=p_p0_range, cross_section=cross_section)
 
     # Classify isotherm
     isotherm_type = analyzer.classify_isotherm()
@@ -205,11 +205,23 @@ def analyze_xps(data, options, material_id, project_path):
         if 'error' not in fit_result:
             fitted_peaks.append(fit_result)
 
-    # Determine elemental composition
-    composition = analyzer.calculate_elemental_composition(fitted_peaks)
+    # Determine elemental composition (use element from options if provided)
+    element = options.get('element', 'Unknown')
+    elements = [element] * len(fitted_peaks)
+    sensitivity_factors = {element: 1.0}
+    try:
+        composition = analyzer.calculate_atomic_composition(elements, sensitivity_factors)
+    except Exception:
+        composition = {}
 
     # Identify oxidation states
-    oxidation_states = analyzer.identify_oxidation_states(fitted_peaks)
+    peak_positions = [fp['parameters'].get('center', 0) for fp in fitted_peaks if 'parameters' in fp]
+    try:
+        ox_list = analyzer.identify_oxidation_states(element, peak_positions)
+        # Convert list to dict format expected by report_generator
+        oxidation_states = {element: ox_list} if isinstance(ox_list, list) else ox_list
+    except Exception:
+        oxidation_states = {}
 
     # Generate plot
     plot_path = Path(project_path) / "Characterization" / "XPS" / f"{material_id}_XPS_spectrum.png"
@@ -240,19 +252,19 @@ def analyze_electrochemistry(data, options, material_id, project_path, measureme
         results = analyzer.analyze_cv(data['x'], data['y'], scan_rate)
         plot_path = Path(project_path) / "Characterization" / "Electrochemistry" / f"{material_id}_CV.png"
         plot_path.parent.mkdir(parents=True, exist_ok=True)
-        analyzer.plot_cv(data['x'], data['y'], output_path=str(plot_path), title=f"CV: {material_id}")
+        analyzer.plot_cv(output_path=str(plot_path), title=f"CV: {material_id}")
 
     elif measurement_type == 'Tafel':
         results = analyzer.analyze_tafel(data['x'], data['y'])
         plot_path = Path(project_path) / "Characterization" / "Electrochemistry" / f"{material_id}_Tafel.png"
         plot_path.parent.mkdir(parents=True, exist_ok=True)
-        analyzer.plot_tafel(data['x'], data['y'], output_path=str(plot_path), title=f"Tafel Plot: {material_id}")
+        analyzer.plot_tafel(output_path=str(plot_path), title=f"Tafel Plot: {material_id}")
 
     elif measurement_type == 'EIS':
         results = analyzer.analyze_eis(data['frequency'], data['z_real'], data['z_imag'])
         plot_path = Path(project_path) / "Characterization" / "Electrochemistry" / f"{material_id}_EIS.png"
         plot_path.parent.mkdir(parents=True, exist_ok=True)
-        analyzer.plot_nyquist(data['z_real'], data['z_imag'], output_path=str(plot_path), title=f"Nyquist Plot: {material_id}")
+        analyzer.plot_nyquist(output_path=str(plot_path), title=f"Nyquist Plot: {material_id}")
 
     else:
         raise ValueError(f"Unknown electrochemistry measurement type: {measurement_type}")
